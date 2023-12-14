@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "7/h23gl7wOQQh6mKQN0DdTC4wVY4GPREq4TigywzQxLmQkZaCRDEb7ZJT6G+M1Sys9QBhGd6KMdQqFjP89zg5w==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\nasas\\source\\repos\\DatingApp\\API\\API.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\nasas\\.nuget\\packages\\microsoft.extensions.apidescription.server\\3.0.0\\microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
+    "C:\\Users\\nasas\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
+    "C:\\Users\\nasas\\.nuget\\packages\\swashbuckle.aspnetcore\\6.2.3\\swashbuckle.aspnetcore.6.2.3.nupkg.sha512",
+    "C:\\Users\\nasas\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.2.3\\swashbuckle.aspnetcore.swagger.6.2.3.nupkg.sha512",
+    "C:\\Users\\nasas\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.2.3\\swashbuckle.aspnetcore.swaggergen.6.2.3.nupkg.sha512",
+    "C:\\Users\\nasas\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\6.2.3\\swashbuckle.aspnetcore.swaggerui.6.2.3.nupkg.sha512"
+  ],
+  "logs": []
+}
