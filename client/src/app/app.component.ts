@@ -14,7 +14,7 @@ export class AppComponent implements OnInit {
   users: any; // declaring variable like javascript
   
   constructor(private http: HttpClient) {
-
+    console.log('in constructor')
   }
 
   ngOnInit(): void {
