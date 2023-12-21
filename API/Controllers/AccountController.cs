@@ -44,6 +44,28 @@ namespace API.Controllers
             return user; 
         }
 
+        [HttpPost("login")]
+        public async Task<ActionResult<AppUser>> Login(LoginDto loginDto) {
+            // find() - if we know primary key
+            // firstOrDefault() - Returns the first element of a sequence, or a default value if the sequence contains no elements.
+            // first - get exception if user does not exists in db
+            // singleOrDefault() - Returns the only element of a sequence, or a default value if the sequence is empty; this method throws an exception if there is more than one element in the sequence
+            var user = await _context.Users.SingleOrDefaultAsync(user => user.UserName == loginDto.Username);
+
+            if (user == null) return Unauthorized("Invalid username!");
+
+            // to get the exact same hash algorithm, pass the key to the hmac method
+            using var hmac = new HMACSHA512(user.PasswordSalt);
+
+            var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
+
+            for (int i = 0; i < computedHash.Length; i++) {
+                if (computedHash[i] != user.PasswordHash[i]) return Unauthorized("Invalid password!");
+            }
+
+            return user;
+        }
+
         private async Task<bool> UserExists(string username) {
             return await _context.Users.AnyAsync(user => user.UserName == username.ToLower());
         }
