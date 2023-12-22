@@ -1,7 +1,10 @@
+using System.Text;
 using API.Data;
 using API.interfaces;
 using API.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +29,20 @@ builder.Services.AddCors();
 3. AddScoped()
 */
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options => {
+        // specify all the rules on how the server should validates the token is a good token
+        options.TokenValidationParameters = new TokenValidationParameters {
+            // check token signing key based on the issuer signing key
+            // if not, anybody can create any random token as long as its JWT
+            ValidateIssuerSigningKey = true,
+            // specify what is our issuer signing key is
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["TokenKey"])),
+            // both false bcs we do not have the information in our token
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
 
 var app = builder.Build();
 
@@ -35,7 +52,8 @@ app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().WithOrigins("ht
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+app.UseAuthentication(); // do you have valid token?
+app.UseAuthorization(); // user have valid token, what user is allowed to do?
 
 app.MapControllers();
 
