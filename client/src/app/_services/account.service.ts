@@ -40,9 +40,6 @@ export class AccountService {
           localStorage.setItem('user', JSON.stringify(user));
           this.currentUserSource.next(user);
         }
-
-        // if we need to use value from the inside function, we need to return inside the map also
-        return user;
       })
     )
   }
