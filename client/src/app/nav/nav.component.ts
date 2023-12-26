@@ -13,7 +13,16 @@ export class NavComponent {
   constructor (private accountService: AccountService) {}
 
   ngOnInit(): void {
+    this.getCurrentUser();
+  }
 
+  getCurrentUser() {
+    // bcs this is an observable, we must subscribe to something
+    this.accountService.currentUser$.subscribe({
+      // !! - turns user object to boolean
+      next: user => this.loggedIn = !!user,
+      error: error => console.log(error )
+    })
   }
 
   login() {
@@ -27,6 +36,7 @@ export class NavComponent {
   }
 
   logout() {
+    this.accountService.logout();
     this.loggedIn = false;
   }
 }
