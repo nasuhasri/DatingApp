@@ -21,7 +21,7 @@ export class AppComponent implements OnInit {
     // add any initialization code that we want to do
     // http is injected via the constructor method and we use this keyword
     // returns observable object
-    this.http.get('https://localhost:5000/api/users').subscribe({
+    this.http.get('https://localhost:5001/api/users').subscribe({
       next: response => this.users = response,
       error: error => console.log(error),
       complete: () => console.log('Request completed')
