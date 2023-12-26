@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-register',
@@ -7,7 +7,8 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class RegisterComponent implements OnInit {
   // this shows this component will receive information from parent component
-  @Input() usersFromHomeComponent: any;
+  @Input() usersFromHomeComponent: any; // parent to child component
+  @Output() cancelRegister = new EventEmitter(); // child to parent component
   model: any = {}
 
   constructor() {}
@@ -20,6 +21,7 @@ export class RegisterComponent implements OnInit {
   }
 
   cancel() {
-    console.log('cancelled');
+    // emit value of false to turn off the register mode in home components
+    this.cancelRegister.emit(false);
   }
 }
