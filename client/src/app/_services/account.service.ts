@@ -33,6 +33,20 @@ export class AccountService {
     );
   }
 
+  register(model: any) {
+    return this.http.post<User>(this.baseUrl + 'account/register', model).pipe(
+      map(user => {
+        if (user) {
+          localStorage.setItem('user', JSON.stringify(user));
+          this.currentUserSource.next(user);
+        }
+
+        // if we need to use value from the inside function, we need to return inside the map also
+        return user;
+      })
+    )
+  }
+
   setCurrentUser(user: User) {
     this.currentUserSource.next(user);
   }

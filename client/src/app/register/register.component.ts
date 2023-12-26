@@ -1,4 +1,6 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AccountService } from '../_services/account.service';
 
 @Component({
   selector: 'app-register',
@@ -6,18 +8,22 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
-  // this shows this component will receive information from parent component
-  @Input() usersFromHomeComponent: any; // parent to child component
   @Output() cancelRegister = new EventEmitter(); // child to parent component
   model: any = {}
 
-  constructor() {}
+  constructor(private accountService: AccountService) {}
 
   ngOnInit(): void {
   }
 
   register() {
-    console.log(this.model);
+    this.accountService.register(this.model).subscribe({
+      next: response => {
+        console.log(response);
+        this.cancel();
+      },
+      error: error => console.log(error)
+    })
   }
 
   cancel() {
