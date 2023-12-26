@@ -453,3 +453,7 @@ API/appsettings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# Database
+API/datingapp.db-shm
+API/datingapp.db-wal
