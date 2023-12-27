@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace API.Entities;
 
 public class AppUser
@@ -12,4 +6,17 @@ public class AppUser
     public string UserName { get; set; }
     public byte[] PasswordHash { get; set; }
     public byte[] PasswordSalt { get; set; }
+    // DateOnly allows us to only track the date of something
+    public DateOnly DateOfBirth { get; set; }
+    public string KnownAs { get; set; }
+    // always use utc which equivalent to gmt time especially when handling user from different time zones
+    public DateTime DateCreated { get; set; } = DateTime.UtcNow;
+    public DateTime LastActive { get; set; } = DateTime.UtcNow;
+    public string Gender { get; set; }
+    public string Introduction { get; set; }
+    public string LookingFor { get; set; }
+    public string Interests { get; set; }
+    public string City { get; set; }
+    public string Country { get; set; }
+    public List<Photo> Photos { get; set; } = new List<Photo>();
 }
