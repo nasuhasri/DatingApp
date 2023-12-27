@@ -33,7 +33,7 @@ export class ErrorInterceptor implements HttpInterceptor {
                 }
 
                 // bcs we want component to actualy deal with these kind of errors
-                throw modelStateErrors;
+                throw modelStateErrors.flat();
               } else {
                 this.toastr.error(error.error, error.status.toString());
               }
