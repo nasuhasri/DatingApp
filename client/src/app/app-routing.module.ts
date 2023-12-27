@@ -9,10 +9,17 @@ import { authGuard } from './_guards/auth.guard';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
-  { path: 'members', component: MemberListComponent, canActivate: [authGuard] },
-  { path: 'members/:id', component: MemberDetailComponent, canActivate: [authGuard] },
-  { path: 'lists', component: ListsComponent, canActivate: [authGuard] },
-  { path: 'messages', component: MessagesComponent, canActivate: [authGuard] },
+  { 
+    path: '',
+    runGuardsAndResolvers: 'always',
+    canActivate: [authGuard],
+    children: [
+      { path: 'members', component: MemberListComponent },
+      { path: 'members/:id', component: MemberDetailComponent },
+      { path: 'lists', component: ListsComponent },
+      { path: 'messages', component: MessagesComponent },
+    ]
+  },
   // if other path than abvove being entered, Home will be displayed
   // and we want path to be full match from the left
   { path: '**', component: HomeComponent, pathMatch: 'full' },
