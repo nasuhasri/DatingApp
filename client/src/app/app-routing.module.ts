@@ -6,6 +6,7 @@ import { MemberDetailComponent } from './members/member-detail/member-detail.com
 import { ListsComponent } from './lists/lists.component';
 import { MessagesComponent } from './messages/messages.component';
 import { authGuard } from './_guards/auth.guard';
+import { TestErrorComponent } from './errors/test-error/test-error.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -20,6 +21,7 @@ const routes: Routes = [
       { path: 'messages', component: MessagesComponent },
     ]
   },
+  { path: 'errors', component: TestErrorComponent },
   // if other path than abvove being entered, Home will be displayed
   // and we want path to be full match from the left
   { path: '**', component: HomeComponent, pathMatch: 'full' },
