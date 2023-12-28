@@ -1,4 +1,6 @@
+using System.Text.Json.Serialization;
 using API.Extensions;
+using API.Helper;
 
 namespace API.Entities;
 
@@ -8,7 +10,8 @@ public class AppUser
     public string UserName { get; set; }
     public byte[] PasswordHash { get; set; }
     public byte[] PasswordSalt { get; set; }
-    // DateOnly allows us to only track the date of something
+    // DateOnly only display date not included time. DateTime will include time.
+    [JsonConverter(typeof(DateOnlyJsonConverter))]
     public DateOnly DateOfBirth { get; set; }
     public string KnownAs { get; set; }
     // always use utc which equivalent to gmt time especially when handling user from different time zones

@@ -18,7 +18,6 @@ public class UsersController : BaseApiController
         _context = context;
     }
 
-    [AllowAnonymous]
     [HttpGet]
     // Task - Represents an asynchronous operation that can return a value.
     public async Task<ActionResult<IEnumerable<AppUser>>> GetAllUsers()
