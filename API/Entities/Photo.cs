@@ -11,6 +11,6 @@ public class Photo
     public string PublicId { get; set; }
 
     // relationship property
-    public int AppUserId { get; set; }
-    public AppUser AppUser { get; set; }
+    public int AppUserId { get; set; } // Required foreign key property
+    public AppUser AppUser { get; set; } // Required reference navigation to principal
 }
