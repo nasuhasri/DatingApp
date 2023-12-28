@@ -1,5 +1,6 @@
 using API.Data;
 using API.interfaces;
+using API.Interfaces;
 using API.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,8 +27,11 @@ namespace API.Extensions
                 - create service that's instantiated when application first starts
                 - never dispose until application close down
             3. AddScoped()
+                - Scoped objects are the same within a request, but different across different requests
+                - created once per request within the scope
             */
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IUserRepository, UserRepository>();
 
             return services;
         }
