@@ -1,6 +1,6 @@
 using API.Data;
 using API.Extensions;
-using API.Helper;
+using API.Helpers;
 using API.Middleware;
 using Microsoft.EntityFrameworkCore;
 

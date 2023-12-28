@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using API.Helper;
+using API.Helpers;
 
 namespace API.DTOs
 {
