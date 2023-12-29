@@ -7,6 +7,8 @@ namespace API.DTOs
     {
         public int Id { get; set; }
         public string UserName { get; set; }
+        // user's main photo
+        public string PhotoUrl { get; set; }
         // DateOnly only display date not included time. DateTime will include time.
         public int Age { get; set; }
         public string KnownAs { get; set; }
