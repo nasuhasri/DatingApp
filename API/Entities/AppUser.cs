@@ -11,7 +11,6 @@ public class AppUser
     public byte[] PasswordHash { get; set; }
     public byte[] PasswordSalt { get; set; }
     // DateOnly only display date not included time. DateTime will include time.
-    [JsonConverter(typeof(DateOnlyJsonConverter))]
     public DateOnly DateOfBirth { get; set; }
     public string KnownAs { get; set; }
     // always use utc which equivalent to gmt time especially when handling user from different time zones
