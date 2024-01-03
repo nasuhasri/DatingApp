@@ -1,0 +1,38 @@
+.card:hover img {
+    transform: scale(1.2, 1.2);
+    transition-duration: 500ms;
+    transition-timing-function: ease-out;
+    opacity: 0.7;
+}
+
+.card img {
+    transform: scale(1.0, 1.0);
+    transition-duration: 500ms;
+    transition-timing-function: ease-out;
+}
+
+.card-img-wrapper {
+    overflow: hidden; /* img zoom only in the box */
+    position: relative; /* to make our button absolutely positioned, this is the requirement */
+}
+
+/* only display the button when user hovers the overlap card */
+.member-icons {
+    position: absolute;
+    bottom: -30%; /* starts of 30% below card */
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    opacity: 0; /* not making the button visible by default */
+}
+
+/* when we hover card, buttons are visible */
+.card-img-wrapper .member-icons {
+    bottom: 0;
+    opacity: 1;
+}
+
+.animate {
+    transition: all 0.3s ease-in-out;
+}
