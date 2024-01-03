@@ -13,11 +13,11 @@ export class MemberService {
 
   getMembers() {
     // need to specify as a list of member
-    return this.http.get<Member[]>(this.baseUrl + 'users', this.getHttpOptions());
+    return this.http.get<Member[]>(this.baseUrl + 'users');
   }
 
   getMember(username: string) {
-    return this.http.get<Member>(this.baseUrl + 'users' + username, this.getHttpOptions());
+    return this.http.get<Member>(this.baseUrl + 'users' + username);
   }
 
   getHttpOptions() {
