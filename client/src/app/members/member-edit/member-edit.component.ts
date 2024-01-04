@@ -4,7 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { take } from 'rxjs';
 import { Member } from 'src/app/_models/member';
 import { User } from 'src/app/_models/user';
-import { MemberService } from 'src/app/_service/member.service';
+import { MemberService } from 'src/app/_services/member.service';
 import { AccountService } from 'src/app/_services/account.service';
 
 @Component({
