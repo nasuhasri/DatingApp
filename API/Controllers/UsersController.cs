@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using API.Data;
 using API.DTOs;
 using API.Entities;
@@ -36,6 +37,24 @@ public class UsersController : BaseApiController
     public async Task<ActionResult<MemberDto>> GetUser(string username)
     {
         return await _userRepository.GetMemberAsync(username);
+    }
+
+    [HttpPut] // dont need to return anything to user
+    public async Task<ActionResult> UpdateUser(MemberUpdateDto memberUpdateDto) {
+        // FindFirst() has ArgumentNullException so we put optional operator (?) to prevent having an exception if username is null or we dont have claim with name identifier
+        var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var user = await _userRepository.GetUserByUsernameAsync(username);
+
+        if (user == null) return NotFound();
+
+        // use mapper functionality to update the properties
+        // overwrite value in user entity with updated value from memberUpdateDto
+        _mapper.Map(memberUpdateDto, user);
+
+        // return 204, everything is okay but nothing to be sent to client
+        if (await _userRepository.SaveAllAsync()) return NoContent();
+
+        return BadRequest("Failed to update user!");
     }
 
     // [HttpGet("{id}")] // /api/users/2
