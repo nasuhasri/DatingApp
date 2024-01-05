@@ -457,3 +457,6 @@ API/appsettings.json
 # Database
 API/datingapp.db-shm
 API/datingapp.db-wal
+
+# App Settings
+API/appsettings.json
