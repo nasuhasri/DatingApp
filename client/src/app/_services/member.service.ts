@@ -42,6 +42,11 @@ export class MemberService {
     );
   }
 
+  setMainPhoto(photoId: number) {
+    // since it is put request, we send empty object
+    return this.http.put(`${this.baseUrl}users/set-main-photo/${photoId}`, {});
+  }
+
   getHttpOptions() {
     const userString = localStorage.getItem('user');
 
