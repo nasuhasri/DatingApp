@@ -57,7 +57,9 @@ namespace API.Controllers
             // firstOrDefault() - Returns the first element of a sequence, or a default value if the sequence contains no elements.
             // first - get exception if user does not exists in db
             // singleOrDefault() - Returns the only element of a sequence, or a default value if the sequence is empty; this method throws an exception if there is more than one element in the sequence
-            var user = await _context.Users.SingleOrDefaultAsync(user => user.UserName == loginDto.Username);
+            var user = await _context.Users
+                .Include(p => p.Photos)
+                .SingleOrDefaultAsync(user => user.UserName == loginDto.Username);
 
             if (user == null) return Unauthorized("Invalid username!");
 
@@ -73,7 +75,10 @@ namespace API.Controllers
             return new UserDto 
             {
                 Username = user.UserName,
-                Token = _tokenService.CreateToken(user)
+                Token = _tokenService.CreateToken(user),
+                // Entity framework is not going to load related entities by default so this will causing errors if we dont put (?)
+                // we need to eagerly load photos entities as well
+                PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url
             };
         }
 
