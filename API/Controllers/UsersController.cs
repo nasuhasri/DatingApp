@@ -75,6 +75,7 @@ public class UsersController : BaseApiController
             PublicId = result.PublicId
         };
 
+        // set first photo of user as isMain=true
         if (user.Photos.Count == 0) photo.IsMain = true;
 
         user.Photos.Add(photo);
