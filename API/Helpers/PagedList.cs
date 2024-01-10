@@ -11,7 +11,7 @@ namespace API.Helpers
             CurrentPage = pageNumber;
             // eg 10 items in db, pageSize of 4. 10/4=2.5, take the ceiling so get 3 page
             TotalPages = (int) Math.Ceiling(count / (double) pageSize);
-            PageSize = pageSize;
+            PageSize = pageSize; // how many user do we want to display in one page
             TotalCount = count;
 
             // return it with a list of items
