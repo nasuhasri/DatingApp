@@ -20,7 +20,7 @@ export class MemberService {
 
     if (page && itemsPerPage) {
       params = params.append('pageNumber', page);
-      params = params.append('itemsPerPage', itemsPerPage);
+      params = params.append('pageSize', itemsPerPage);
     }
 
     return this.http.get<Member[]>(this.baseUrl + 'users', {observe: 'response', params}).pipe(
