@@ -37,6 +37,7 @@ export class MemberListComponent implements OnInit {
 
   pageChanged(event: any) {
     if (this.pageNumber !== event.page) {
+      // update the pageNumber to page number from user so the loadMembers() will auto pickup the pageNumber needed
       this.pageNumber = event.page;
       this.loadMembers(); // get the updated content
     }
