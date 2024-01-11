@@ -40,11 +40,17 @@ namespace API.Data
 
         public async Task<PagedList<MemberDto>> GetMembersAsync(UserParams userParams)
         {
-            var query = _context.Users
-                .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
-                .AsNoTracking(); // EF is not going to keep track of what we return from this method
+            var query = _context.Users.AsQueryable();
 
-            return await PagedList<MemberDto>.CreateAsync(query, userParams.pageNumber, userParams.PageSize);
+            // exclude current logged in user
+            query = query.Where(u => u.UserName != userParams.CurrentUsername);
+            query = query.Where(u => u.Gender == userParams.Gender);
+
+            return await PagedList<MemberDto>.CreateAsync(
+                query.AsNoTracking().ProjectTo<MemberDto>(_mapper.ConfigurationProvider), 
+                userParams.pageNumber, 
+                userParams.PageSize
+            );
         }
 
         public async Task<AppUser> GetUserByIdAsync(int id)
