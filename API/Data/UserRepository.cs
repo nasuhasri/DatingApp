@@ -54,6 +54,12 @@ namespace API.Data
 
             query = query.Where(u => u.DateOfBirth >= minDob && u.DateOfBirth <= maxDob);
 
+            query = userParams.OrderBy switch {
+                // get the latest record
+                "created" => query.OrderByDescending(u => u.DateCreated),
+                _ => query.OrderByDescending(u => u.LastActive)
+            };
+
             return await PagedList<MemberDto>.CreateAsync(
                 query.AsNoTracking().ProjectTo<MemberDto>(_mapper.ConfigurationProvider), 
                 userParams.pageNumber, 
