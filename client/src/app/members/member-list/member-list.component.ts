@@ -18,18 +18,10 @@ export class MemberListComponent implements OnInit {
   members: Member[] = [];
   pagination: Pagination | undefined;
   userParams: UserParams | undefined;
-  user: User | undefined;
   genderList = [{value: 'male', display: 'Males'}, {value: 'female', display: 'Females'}];
 
-  constructor(private memberService: MemberService, private accountService: AccountService) {
-    this.accountService.currentUser$.pipe(take(1)).subscribe({
-      next: user => {
-        if (user) {
-          this.userParams = new UserParams(user);
-          this.user = user;
-        }
-      }
-    })
+  constructor(private memberService: MemberService) {
+    this.userParams = this.memberService.getUserParams();
   }
 
   ngOnInit(): void {
@@ -38,16 +30,19 @@ export class MemberListComponent implements OnInit {
   }
 
   loadMembers() {
-    if (!this.userParams) return;
+    if (this.userParams) {
+      // set user params first
+      this.memberService.setUserParams(this.userParams);
 
-    this.memberService.getMembers(this.userParams).subscribe({
-      next: response => {
-        if (response.result && response.pagination) {
-          this.members = response.result;
-          this.pagination = response.pagination;
+      this.memberService.getMembers(this.userParams).subscribe({
+        next: response => {
+          if (response.result && response.pagination) {
+            this.members = response.result;
+            this.pagination = response.pagination;
+          }
         }
-      }
-    })
+      })
+    }
   }
 
   pageChanged(event: any) {
@@ -55,15 +50,15 @@ export class MemberListComponent implements OnInit {
     if (this.userParams && this.userParams?.pageNumber !== event.page) {
       // update the pageNumber to page number from user so the loadMembers() will auto pickup the pageNumber needed
       this.userParams.pageNumber = event.page;
+      // set user params to the latest params
+      this.memberService.setUserParams(this.userParams);
       this.loadMembers(); // get the updated content
     }
   }
 
   resetFilters() {
-    if (this.user) {
-      // return back with default settings for filter
-      this.userParams = new UserParams(this.user);
-      this.loadMembers();
-    }
+    // return back with default settings for filter
+    this.userParams = this.memberService.resetUserParams();
+    this.loadMembers();
   }
 }
