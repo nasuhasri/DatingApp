@@ -94,6 +94,15 @@ export class MemberService {
     return this.http.delete(`${this.baseUrl}users/delete-photo/${photoId}`);
   }
 
+  addLike(username: string) {
+    // since it is post request and we dont need anything to send, so just send empty object
+    return this.http.post(`${this.baseUrl}likes/${username}`, {});
+  }
+
+  getLikes(predicate: string) {
+    return this.http.get(`${this.baseUrl}likes?predicate=${predicate}`);
+  }
+
   getHttpOptions() {
     const userString = localStorage.getItem('user');
 
