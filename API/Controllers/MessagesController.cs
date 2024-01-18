@@ -69,5 +69,27 @@ namespace API.Controllers
 
             return Ok(await _messageRepository.GetMessageThread(currentUserName, username));
         }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteMessage(int id) {
+            var username = User.GetUsername();
+
+            var message = await _messageRepository.GetMessage(id);
+
+            // ensure this current user that wants to delete message is either sender or receipent of the message
+            if (message.SenderUsername != username && message.ReceipentUsername != username) return Unauthorized();
+
+            if (message.SenderUsername == username) message.SenderDeleted = true;
+            if (message.ReceipentUsername == username) message.ReceipentDeleted = true;
+
+            // check if both sender and receipent delete their message, only then we delete message from db
+            if (message.SenderDeleted && message.ReceipentDeleted) {
+                _messageRepository.DeleteMessage(message);
+            }
+
+            if (await _messageRepository.SaveAllAsync()) return Ok();
+
+            return BadRequest("Problem deleting the message!");
+        }
     }
 }
