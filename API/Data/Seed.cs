@@ -27,8 +27,8 @@ namespace API.Data
 
                 user.UserName = user.UserName.ToLower();
                 // create password for each user
-                user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes("Pa$$w0rd"));
-                user.PasswordSalt = hmac.Key;
+                // user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes("Pa$$w0rd"));
+                // user.PasswordSalt = hmac.Key;
 
                 context.Users.Add(user);
             }

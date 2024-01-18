@@ -37,11 +37,11 @@ namespace API.Controllers
 
             // this instances requires some spaces in memory and once we finished with the class,
             // we want to dispose it automatically - therefore using keyword
-            using var hmac = new HMACSHA512();
+            // using var hmac = new HMACSHA512();
 
             user.UserName = registerDto.Username.ToLower();
-            user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)); // return byte array
-            user.PasswordSalt = hmac.Key;
+            // user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)); // return byte array
+            // user.PasswordSalt = hmac.Key;
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
@@ -70,13 +70,13 @@ namespace API.Controllers
             if (user == null) return Unauthorized("Invalid username!");
 
             // to get the exact same hash algorithm, pass the key to the hmac method
-            using var hmac = new HMACSHA512(user.PasswordSalt);
+            // using var hmac = new HMACSHA512(user.PasswordSalt);
 
-            var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
+            // var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
 
-            for (int i = 0; i < computedHash.Length; i++) {
-                if (computedHash[i] != user.PasswordHash[i]) return Unauthorized("Invalid password!");
-            }
+            // for (int i = 0; i < computedHash.Length; i++) {
+            //     if (computedHash[i] != user.PasswordHash[i]) return Unauthorized("Invalid password!");
+            // }
 
             return new UserDto 
             {
