@@ -63,7 +63,7 @@ namespace API.Data
                 .Where(
                     m => (m.ReceipentUsername == currentUserName && m.SenderUsername == receipentUserName) || (m.ReceipentUsername == receipentUserName && m.SenderUsername == currentUserName)
                 )
-                .OrderByDescending(m => m.MessageSent) // get latest message first
+                .OrderBy(m => m.MessageSent) // get latest message first
                 .ToListAsync();
 
             // get a list of unread messages and mark them as sent
