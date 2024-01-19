@@ -28,7 +28,6 @@ public class UsersController : BaseApiController
         _photoService = photoService;
     }
 
-    [Authorize(Roles = "Admin")]
     [HttpGet]
     // Task - Represents an asynchronous operation that can return a value.
     public async Task<ActionResult<PagedList<MemberDto>>> GetAllUsers([FromQuery]UserParams userParams)
@@ -47,7 +46,6 @@ public class UsersController : BaseApiController
         return Ok(users);
     }
 
-    [Authorize(Roles = "Member")]
     [HttpGet("{username}")] // /api/users/bob
     public async Task<ActionResult<MemberDto>> GetUser(string username)
     {
