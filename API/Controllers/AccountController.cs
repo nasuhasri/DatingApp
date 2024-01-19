@@ -47,12 +47,17 @@ namespace API.Controllers
 
             if (!result.Succeeded) return BadRequest(result.Errors);
 
+            // add role to new user
+            var roleResult = await _userManager.AddToRoleAsync(user, "Member");
+
+            if (!roleResult.Succeeded) return BadRequest(roleResult.Errors);
+
             // we specify to return a user - will return all properties incl passwords
             // but using DTO, only return properties we want
             return new UserDto 
             {
                 Username = user.UserName,
-                Token = _tokenService.CreateToken(user),
+                Token = await _tokenService.CreateToken(user),
                 KnownAs = user.KnownAs,
                 Gender = user.Gender
             };
@@ -77,7 +82,7 @@ namespace API.Controllers
             return new UserDto 
             {
                 Username = user.UserName,
-                Token = _tokenService.CreateToken(user),
+                Token = await _tokenService.CreateToken(user),
                 // Entity framework is not going to load related entities by default so this will causing errors if we dont put (?)
                 // we need to eagerly load photos entities as well
                 PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
