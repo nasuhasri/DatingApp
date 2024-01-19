@@ -9,6 +9,7 @@ using API.DTOs;
 using API.Entities;
 using API.interfaces;
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,13 +17,13 @@ namespace API.Controllers
 {
     public class AccountController : BaseApiController
     {
-        private readonly DataContext _context;
+        private readonly UserManager<AppUser> _userManager;
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
 
-        public AccountController(DataContext context, ITokenService tokenService, IMapper mapper)
+        public AccountController(UserManager<AppUser> userManager, ITokenService tokenService, IMapper mapper)
         {
-            _context = context;
+            _userManager = userManager;
             _tokenService = tokenService;
             _mapper = mapper;
         }
@@ -40,11 +41,11 @@ namespace API.Controllers
             // using var hmac = new HMACSHA512();
 
             user.UserName = registerDto.Username.ToLower();
-            // user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)); // return byte array
-            // user.PasswordSalt = hmac.Key;
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            // save data to db
+            var result = await _userManager.CreateAsync(user, registerDto.Password);
+
+            if (!result.Succeeded) return BadRequest(result.Errors);
 
             // we specify to return a user - will return all properties incl passwords
             // but using DTO, only return properties we want
@@ -63,20 +64,15 @@ namespace API.Controllers
             // firstOrDefault() - Returns the first element of a sequence, or a default value if the sequence contains no elements.
             // first - get exception if user does not exists in db
             // singleOrDefault() - Returns the only element of a sequence, or a default value if the sequence is empty; this method throws an exception if there is more than one element in the sequence
-            var user = await _context.Users
+            var user = await _userManager.Users
                 .Include(p => p.Photos)
                 .SingleOrDefaultAsync(user => user.UserName == loginDto.Username);
 
             if (user == null) return Unauthorized("Invalid username!");
 
-            // to get the exact same hash algorithm, pass the key to the hmac method
-            // using var hmac = new HMACSHA512(user.PasswordSalt);
+            var result = await _userManager.CheckPasswordAsync(user, loginDto.Password);
 
-            // var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
-
-            // for (int i = 0; i < computedHash.Length; i++) {
-            //     if (computedHash[i] != user.PasswordHash[i]) return Unauthorized("Invalid password!");
-            // }
+            if (!result) return Unauthorized();
 
             return new UserDto 
             {
@@ -91,7 +87,7 @@ namespace API.Controllers
         }
 
         private async Task<bool> UserExists(string username) {
-            return await _context.Users.AnyAsync(user => user.UserName == username.ToLower());
+            return await _userManager.Users.AnyAsync(user => user.UserName == username.ToLower());
         }
     }
 }
