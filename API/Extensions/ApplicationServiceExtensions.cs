@@ -3,6 +3,7 @@ using API.Helpers;
 using API.interfaces;
 using API.Interfaces;
 using API.Services;
+using API.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Extensions
@@ -40,6 +41,10 @@ namespace API.Extensions
             services.AddScoped<ILikesRepository, LikesRepository>();
             services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddSignalR();
+
+            // want this dictionary to be available in our whole application for every users that connect to the service
+            // dont want this to be destroyed once HTTP request has been completed.
+            services.AddSingleton<PresenceTracker>();
 
             return services;
         }
