@@ -33,6 +33,22 @@ namespace API.Extensions
                         ValidateIssuer = false,
                         ValidateAudience = false
                     };
+
+                    options.Events = new JwtBearerEvents {
+                        OnMessageReceived = context => {
+                            // access_token: var that signalR will use from the client side when it sends up token
+                            var accessToken = context.Request.Query["access_token"];
+                            var path = context.HttpContext.Request.Path;
+
+                            // if we are on that path and have access token
+                            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs")) {
+                                // gives signalR or hub to the bearer token bcs we adding it to context
+                                context.Token = accessToken;
+                            }
+
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
 
             services.AddAuthorization(opt => {
