@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, map } from 'rxjs';
 import { User } from '../_models/user';
 import { environment } from 'src/environments/environment';
+import { PresenceService } from './presence.service';
 
 // angular services can be injected into the components or other services
 @Injectable({
@@ -18,7 +19,7 @@ export class AccountService {
   // $ - to signify that this is unobservable
   currentUser$ = this.currentUserSource.asObservable();
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private presenceService: PresenceService) { }
 
   login(model: User) {
     // return type will be type of User
@@ -50,11 +51,16 @@ export class AccountService {
 
     localStorage.setItem('user', JSON.stringify(user));
     this.currentUserSource.next(user);
+
+    // create hub connection to our user
+    this.presenceService.createHubConnection(user);
   }
 
   logout() {
     localStorage.removeItem('user');
     this.currentUserSource.next(null);
+
+    this.presenceService.stopHubConnection();
   }
 
   getDecodedToken(token: string) {
