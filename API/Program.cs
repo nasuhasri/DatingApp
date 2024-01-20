@@ -3,6 +3,7 @@ using API.Entities;
 using API.Extensions;
 using API.Helpers;
 using API.Middleware;
+using API.SignalR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,6 +28,7 @@ app.UseAuthentication(); // do you have valid token?
 app.UseAuthorization(); // user have valid token, what user is allowed to do?
 
 app.MapControllers();
+app.MapHub<PresenceHub>("hubs/presence");
 
 // give access to all the services we have inside the program class
 using var scope = app.Services.CreateScope();
