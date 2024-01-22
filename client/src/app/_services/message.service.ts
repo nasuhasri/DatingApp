@@ -6,6 +6,8 @@ import { Message } from '../_models/message';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { User } from '../_models/user';
 import { BehaviorSubject, take } from 'rxjs';
+import { group } from '@angular/animations';
+import { Group } from '../_models/group';
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +34,24 @@ export class MessageService {
     this.hubConnection.on('ReceiveMessageThread', messages => {
       // create observable that's going to store the messages so we can subscribe them in the component
       this.messageThreadSource.next(messages);
+    })
+
+    this.hubConnection.on('UpdatedGroup', (group: Group) => {
+      // otherUsername - this is the person that's joining the group
+      // to check if there's any unread messages -> to mark them as read
+      if (group.connections.some(x => x.username === otherUsername)) {
+        this.messageThread$.pipe(take(1)).subscribe({
+          next: messages => {
+            messages.forEach(message => {
+              if (!message.dateRead) {
+                message.dateRead = new Date(Date.now())
+              }
+            })
+
+            this.messageThreadSource.next([...messages]);
+          }
+        })
+      }
     })
 
     this.hubConnection.on('NewMessage', message => {
