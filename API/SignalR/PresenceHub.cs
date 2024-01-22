@@ -16,30 +16,31 @@ namespace API.SignalR
 
         public override async Task OnConnectedAsync()
         {
-            await _tracker.UserConnected(Context.User.GetUsername(), Context.ConnectionId);
+            var isOnline = await _tracker.UserConnected(Context.User.GetUsername(), Context.ConnectionId);
 
-            // Client: used to invoke methods on the clients connected to this hub
-            // send message to other users to notify them somebody is now online
-            // Others: everybody else except for client that is connecting
-            // so when this user connect, anybody else that connected to this same hub is gonna receive username that has just connected
-            await Clients.Others.SendAsync("UserIsOnline", Context.User.GetUsername());
+            if (isOnline) {
+                // Client: used to invoke methods on the clients connected to this hub
+                // send message to other users to notify them somebody is now online
+                // Others: everybody else except for client that is connecting
+                // so when this user connect, anybody else that connected to this same hub is gonna receive username that has just connected
+                // sending notification using clients others
+                await Clients.Others.SendAsync("UserIsOnline", Context.User.GetUsername());
+            }
 
             // get a list of current online users
             var currentUsers = await _tracker.GetOnlineUsers();
 
-            // send the info to all connected clients when somebody connects
-            await Clients.All.SendAsync("GetOnlineUsers", currentUsers);
+            // send the info to only connected clients when somebody connects
+            await Clients.Caller.SendAsync("GetOnlineUsers", currentUsers);
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)
         {
-            await _tracker.UserDisconnected(Context.User.GetUsername(), Context.ConnectionId);
+            var isOffline = await _tracker.UserDisconnected(Context.User.GetUsername(), Context.ConnectionId);
 
-            await Clients.Others.SendAsync("UserIsOffline", Context.User.GetUsername());
-
-            var currentUsers = await _tracker.GetOnlineUsers();
-
-            await Clients.All.SendAsync("GetOnlineUsers", currentUsers);
+            if (isOffline) {
+                await Clients.Others.SendAsync("UserIsOffline", Context.User.GetUsername());
+            }
 
             await base.OnDisconnectedAsync(exception);
         }
