@@ -33,6 +33,7 @@ app.UseAuthorization(); // user have valid token, what user is allowed to do?
 
 app.MapControllers();
 app.MapHub<PresenceHub>("hubs/presence");
+app.MapHub<MessageHub>("hubs/message");
 
 // give access to all the services we have inside the program class
 using var scope = app.Services.CreateScope();
