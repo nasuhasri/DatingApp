@@ -1,5 +1,8 @@
+using API.DTOs;
+using API.Entities;
 using API.Extensions;
 using API.Interfaces;
+using AutoMapper;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,10 +11,14 @@ namespace API.SignalR
     public class MessageHub : Hub
     {
         private readonly IMessageRepository _messageRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
 
-        public MessageHub(IMessageRepository messageRepository)
+        public MessageHub(IMessageRepository messageRepository, IUserRepository userRepository, IMapper mapper)
         {
             _messageRepository = messageRepository;
+            _userRepository = userRepository;
+            _mapper = mapper;
         }
 
         public override async Task OnConnectedAsync()
@@ -29,6 +36,35 @@ namespace API.SignalR
         public override Task OnDisconnectedAsync(Exception exception)
         {
             return base.OnDisconnectedAsync(exception);
+        }
+
+        public async Task SendMessage(CreateMessageDto createMessageDto) {
+            var username = Context.User.GetUsername();
+
+            if (username == createMessageDto.ReceipentUsername.ToLower()) {
+                throw new HubException("You cannot send messages to yourself!");
+            }
+
+            var sender = await _userRepository.GetUserByUsernameAsync(username);
+            var receipent = await _userRepository.GetUserByUsernameAsync(createMessageDto.ReceipentUsername);
+
+            if (receipent == null) throw new HubException("Not found user!");
+
+            var message = new Message {
+                // EF knows that sender has sender.id since it is AppUser object and it automatically set it but only for the Id
+                Sender = sender,
+                Receipent = receipent,
+                SenderUsername = sender.UserName,
+                ReceipentUsername = receipent.UserName,
+                Content = createMessageDto.Content
+            };
+
+            _messageRepository.AddMessage(message);
+
+            if (await _messageRepository.SaveAllAsync()) {
+                var group = GetGroupName(sender.UserName, receipent.UserName);
+                await Clients.Group(group).SendAsync("NewMessage", _mapper.Map<MessageDto>(message));
+            }
         }
 
         // get group name with 2 username in alphabetical order
