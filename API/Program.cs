@@ -47,6 +47,12 @@ try
     
     // MigrateAsync(): Asynchronously applies any pending migrations for the context to the database. Will create the database if it does not already exist.
     await context.Database.MigrateAsync();
+
+    // options 1 to clear the Connections table: but will cause error if we have thousands row of data
+    // context.Connections.RemoveRange(context.Connections);
+
+    await context.Database.ExecuteSqlRawAsync("DELETE FROM [Connections]");
+
     await Seed.SeedUsers(userManager, roleManager);
 }
 catch (Exception ex)
